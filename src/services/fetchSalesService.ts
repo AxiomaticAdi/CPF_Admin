@@ -2,7 +2,7 @@ import db from "../config/firebase-config";
 import { collection, getDocs } from "firebase/firestore";
 import { Sale } from "../types";
 
-export async function fetchEvents(): Promise<Sale[]> {
+export async function fetchSales(): Promise<Sale[]> {
 	const salesCollection = collection(db, "Sales");
 
 	try {
