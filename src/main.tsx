@@ -5,7 +5,6 @@ import "./index.css";
 
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import ErrorPage from "./pages/ErrorPage.tsx";
-import EventsProvider from "./contexts/EventsProvider.tsx";
 
 const router = createHashRouter([
 	{
@@ -17,8 +16,6 @@ const router = createHashRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
 	<React.StrictMode>
-		<EventsProvider>
-			<RouterProvider router={router} />
-		</EventsProvider>
+		<RouterProvider router={router} />
 	</React.StrictMode>
 );
