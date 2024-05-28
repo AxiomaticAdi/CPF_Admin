@@ -10,11 +10,15 @@ export type Event = {
 	price: number;
 };
 
-export type BlogPost = {
+export type Customer = {
 	id: string;
-	postTitle: string;
-	postDescription: string;
-	postContent: string;
-	postImageUrl: string;
-	postDate: string;
+	name: string;
+	email: string;
+};
+
+export type Sale = {
+	id: string;
+	eventId: string;
+	ticketQuantity: number;
+	customerId: string;
 };
