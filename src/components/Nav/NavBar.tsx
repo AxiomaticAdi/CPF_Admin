@@ -8,30 +8,14 @@ export type CustomLink = {
 
 export default function Navbar() {
 	const links: CustomLink[] = [
-		{
-			text: "Home",
-			path: "/",
-		},
-		{
-			text: "Calendar",
-			path: "/calendar",
-		},
-		{
-			text: "Events",
-			path: "/events",
-		},
-		{
-			text: "About",
-			path: "/about",
-		},
-		{
-			text: "FAQ",
-			path: "/faq",
-		},
-		{
-			text: "Blog",
-			path: "/blog",
-		},
+		// {
+		// 	text: "Admin Home",
+		// 	path: "/",
+		// },
+		// {
+		// 	text: "Customer Home",
+		// 	path: "/calendar",
+		// },
 	];
 
 	return (
