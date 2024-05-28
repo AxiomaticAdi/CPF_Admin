@@ -1,0 +1,4 @@
+/* styles.css */
+.drop-shadow-white {
+	filter: drop-shadow(0 4px 3px rgba(255, 255, 255, 0.7));
+}
