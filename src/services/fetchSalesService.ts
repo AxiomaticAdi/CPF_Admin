@@ -16,7 +16,7 @@ export async function fetchSales(): Promise<Sale[]> {
 				id: doc.id,
 				eventId: data.EventDetails.eventId,
 				ticketQuantity: data.EventDetails.numTickets,
-				customerId: data.CustomerId,
+				customerId: data.customerId,
 			};
 			sales.push(sale);
 		});

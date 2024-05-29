@@ -14,8 +14,8 @@ export async function fetchCustomers(): Promise<Customer[]> {
 
 			const customer: Customer = {
 				id: doc.id,
-				name: data.Name,
-				email: data.Email,
+				name: data.name,
+				email: data.email,
 			};
 			customers.push(customer);
 		});

@@ -22,3 +22,12 @@ export type Sale = {
 	ticketQuantity: number;
 	customerId: string;
 };
+
+export type EventCustomer = {
+	customerId: string;
+	eventId: string;
+	saleId: string;
+	name: string;
+	email: string;
+	ticketQuantity: number;
+};
