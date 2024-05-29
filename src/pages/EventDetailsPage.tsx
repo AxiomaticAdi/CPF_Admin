@@ -45,12 +45,13 @@ const EventDetailsPage = () => {
 
 	// Map sales to customers for given event
 	useEffect(() => {
-		if (!eventId) return;
+		if (!eventId) {
+			console.log("No event ID provided");
+			return;
+		}
 
 		// Filter sales for the given event
 		const salesForEvent = sales.filter((sale) => sale.eventId === eventId);
-
-		console.log("Sales for event:", salesForEvent);
 
 		// Map sales to customers
 		const customersForEvent: EventCustomer[] = salesForEvent
@@ -69,7 +70,7 @@ const EventDetailsPage = () => {
 			.filter(Boolean) as EventCustomer[]; // Filter out any null values
 
 		setEventCustomers(customersForEvent);
-	}, [eventId]);
+	}, [eventId, customers, sales]);
 
 	if (isLoading) {
 		return (
@@ -82,14 +83,6 @@ const EventDetailsPage = () => {
 	// Print event ID
 	console.log("Event ID is:");
 	console.log(eventId);
-
-	// Print customers
-	console.log("Customers are:");
-	console.log(customers);
-
-	// Print sales
-	console.log("Sales are:");
-	console.log(sales);
 
 	// Print event customers
 	console.log("Event Customers are:");

@@ -1,5 +1,6 @@
 import React from "react";
 import { Event } from "../types";
+import NavButton from "./NavButton";
 
 type EventsTableProps = {
 	events: Event[];
@@ -30,7 +31,12 @@ const EventsTable: React.FC<EventsTableProps> = ({ events }) => {
 				<tbody>
 					{events.map((event) => (
 						<tr key={event.id} className="hover:bg-gray-100">
-							<td className="py-2 px-4 border-b">{event.name}</td>
+							<td className="py-2 px-4 border-b">
+								<NavButton
+									buttonText={event.name}
+									navigateTo={"/" + event.id}
+								/>
+							</td>
 							<td className="py-2 px-4 border-b">
 								{new Date(event.startTime).toLocaleDateString()}
 							</td>
