@@ -1,29 +1,32 @@
-import db from "../config/firebase-config";
-import { collection, getDocs } from "firebase/firestore";
 import { Sale } from "../types";
 
-export async function fetchSales(): Promise<Sale[]> {
-	const salesCollection = collection(db, "Sales");
+export async function fetchSales(password: string): Promise<Sale[]> {
+	let salesCollection: Sale[] = [];
 
 	try {
-		const snapshot = await getDocs(salesCollection);
-		const sales: Sale[] = [];
-
-		snapshot.forEach((doc) => {
-			const data = doc.data();
-
-			const sale: Sale = {
-				id: doc.id,
-				eventId: data.EventDetails.eventId,
-				ticketQuantity: data.EventDetails.numTickets,
-				customerId: data.customerId,
-			};
-			sales.push(sale);
+		const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sales`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+				Authorization: `Bearer ${password}`,
+			},
 		});
 
-		return sales;
+		if (!response.ok) {
+			throw new Error("Failed to fetch sales");
+		}
+
+		const data = await response.json();
+		console.log(data);
+		salesCollection = data;
+
+		return salesCollection;
 	} catch (error) {
+		if (password === "") {
+			console.error("No password input:", error);
+			return [];
+		}
 		console.error("Error fetching sales:", error);
-		throw error; // rethrow the error after logging, or handle it as needed
+		throw error;
 	}
 }

@@ -1,47 +1,52 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetchCustomers } from "../services/fetchCustomersService";
 import { fetchSales } from "../services/fetchSalesService";
 import { Customer, EventCustomer, Sale } from "../types";
 import Page from "../components/Page";
 import LoadingSpinner from "../components/LoadingSpinner";
+import PasswordInput from "../components/PasswordInput";
+import { fetchCustomers } from "../services/fetchCustomersService";
 
 const EventDetailsPage = () => {
 	const { eventId } = useParams();
 
-	const [customers, setCustomers] = useState<Customer[]>([]);
 	const [sales, setSales] = useState<Sale[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-
+	const [customers, setCustomers] = useState<Customer[]>([]);
 	const [eventCustomers, setEventCustomers] = useState<EventCustomer[]>([]);
 
-	// Fetch customers and sales
+	const [password, setPassword] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
+
+	// Fetch sales whenever password changes
 	useEffect(() => {
 		const fetchData = async () => {
-			try {
-				const fetchedCustomers = await fetchCustomers();
-				setCustomers(fetchedCustomers);
-			} catch (error) {
-				console.error("Error fetching customers:", error);
-				alert("Error fetching customers");
-				return;
-			}
+			setIsLoading(true);
 
 			try {
-				const fetchedSales = await fetchSales();
+				const fetchedSales: Sale[] = await fetchSales(password);
 				setSales(fetchedSales);
 			} catch (error) {
 				console.error("Error fetching sales:", error);
 				alert("Error fetching sales");
-				return;
 			} finally {
-				// Set loading state to false after all fetches
+				setIsLoading(false);
+			}
+
+			try {
+				const fetchedCustomers: Customer[] = await fetchCustomers(password);
+				setCustomers(fetchedCustomers);
+			} catch (error) {
+				console.error("Error fetching customers:", error);
+				alert("Error fetching customers");
+			} finally {
 				setIsLoading(false);
 			}
 		};
 
-		fetchData(); // Call the async function
-	}, []);
+		if (password) {
+			fetchData();
+		}
+	}, [password]);
 
 	// Map sales to customers for given event
 	useEffect(() => {
@@ -71,61 +76,51 @@ const EventDetailsPage = () => {
 
 		setEventCustomers(customersForEvent);
 	}, [eventId, customers, sales]);
-
-	if (isLoading) {
-		return (
-			<Page>
-				<LoadingSpinner />
-			</Page>
-		);
-	}
-
-	// Print event ID
-	console.log("Event ID is:");
-	console.log(eventId);
-
-	// Print event customers
-	console.log("Event Customers are:");
-	console.log(eventCustomers);
-
 	return (
 		<Page>
-			<table className="min-w-full divide-y divide-gray-200">
-				<thead>
-					<tr>
-						<th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-							Customer Name
-						</th>
-						<th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-							Email
-						</th>
-						<th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-							Tickets Purchased
-						</th>
-						<th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-							Sale ID
-						</th>
-					</tr>
-				</thead>
-				<tbody className="bg-white divide-y divide-gray-200 text-left">
-					{eventCustomers.map((eventCustomer) => (
-						<tr key={eventCustomer.saleId}>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								{eventCustomer.name}
-							</td>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								{eventCustomer.email}
-							</td>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								{eventCustomer.ticketQuantity}
-							</td>
-							<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-								{eventCustomer.saleId}
-							</td>
+			<PasswordInput setPassword={setPassword} />
+			{isLoading ? (
+				<div className="flex justify-center mt-8">
+					<LoadingSpinner />
+				</div>
+			) : (
+				<table className="min-w-full divide-y divide-gray-200 mt-8">
+					<thead>
+						<tr>
+							<th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								Customer Name
+							</th>
+							<th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								Email
+							</th>
+							<th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								Tickets Purchased
+							</th>
+							<th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+								Sale ID
+							</th>
 						</tr>
-					))}
-				</tbody>
-			</table>
+					</thead>
+					<tbody className="bg-white divide-y divide-gray-200 text-left">
+						{eventCustomers.map((eventCustomer) => (
+							<tr key={eventCustomer.saleId}>
+								<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+									{eventCustomer.name}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+									{eventCustomer.email}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+									{eventCustomer.ticketQuantity}
+								</td>
+								<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+									{eventCustomer.saleId}
+								</td>
+							</tr>
+						))}
+					</tbody>
+				</table>
+			)}
 		</Page>
 	);
 };

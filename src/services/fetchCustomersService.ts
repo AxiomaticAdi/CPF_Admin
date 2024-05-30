@@ -1,28 +1,35 @@
-import db from "../config/firebase-config";
-import { collection, getDocs } from "firebase/firestore";
 import { Customer } from "../types";
 
-export async function fetchCustomers(): Promise<Customer[]> {
-	const customersCollection = collection(db, "Customers");
+export async function fetchCustomers(password: string): Promise<Customer[]> {
+	let customersCollection: Customer[] = [];
 
 	try {
-		const snapshot = await getDocs(customersCollection);
-		const customers: Customer[] = [];
+		const response = await fetch(
+			`${import.meta.env.VITE_BACKEND_URL}/customers`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${password}`,
+				},
+			}
+		);
 
-		snapshot.forEach((doc) => {
-			const data = doc.data();
+		if (!response.ok) {
+			throw new Error("Failed to fetch customers");
+		}
 
-			const customer: Customer = {
-				id: doc.id,
-				name: data.name,
-				email: data.email,
-			};
-			customers.push(customer);
-		});
+		const data = await response.json();
+		console.log(data);
+		customersCollection = data;
 
-		return customers;
+		return customersCollection;
 	} catch (error) {
-		console.error("Error fetching events:", error);
-		throw error; // rethrow the error after logging, or handle it as needed
+		if (password === "") {
+			console.error("No password input:", error);
+			return [];
+		}
+		console.error("Error fetching customers:", error);
+		throw error;
 	}
 }
