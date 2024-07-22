@@ -30,6 +30,9 @@ export async function fetchEvents(): Promise<Event[]> {
 			events.push(eventItem);
 		});
 
+		// Sort events in reverse order
+		events.sort((a, b) => b.endTime.getTime() - a.endTime.getTime());
+
 		return events;
 	} catch (error) {
 		console.error("Error fetching events:", error);
